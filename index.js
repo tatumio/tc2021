@@ -11,9 +11,9 @@ const wallet = async (currency) => {
     const tx = await Tatum.sendTransaction(true, currency, {
         fromPrivateKey: '0xa488a82b8b57c3ece4307525741fd8256781906c5fad948b85f1d63000948236',
         to: address.address,
-        amount: '0.001'
+        amount: '0.000001'
     });
-    console.log(`Explorer: https://alfajores-blockscout.celo-testnet.org/tx/${tx.txId}/token-transfers`);
+    console.log(`Explorer: https://mumbai.polygonscan.com/tx/${tx.txId}`);
     while (true) {
         await new Promise(r => setTimeout(r, 5000));
         const balance = await Tatum.getAccountBalance(account.id);
@@ -31,16 +31,6 @@ async function demo() {
     // await wallet(Currency.TRON);
     // await wallet(Currency.CELO);
     // await wallet(Currency.ETH);
-
-    await Tatum.sendStoreDataTransaction({
-        fromPrivateKey: '',
-        from: '',
-        data: 'Hello guys!!!',
-        chain: Tatum.Currency.MATIC,
-    })
-
-
-
 }
 
 demo();
