@@ -5,7 +5,7 @@ const {readFileSync} = require('fs');
 
 async function demo() {
     console.log('Minting new NFT token on FLOW.')
-    const result = await Tatum.mintNFTWithIPFSMetadata(true, {
+    const result = await Tatum.createNFT(true, {
         to: '0x10247089e55180c9',
         contractAddress: '2d103773-50e2-4a37-ac3d-61bc6af8faee',
         chain: Tatum.Currency.FLOW,

@@ -5,7 +5,7 @@ const {readFileSync} = require('fs');
 
 async function demo() {
     console.log('Minting new NFT token on MATIC.')
-    const result = await Tatum.mintNFTWithIPFSMetadata(true, {
+    const result = await Tatum.createNFT(true, {
         to: '0x80d8bac9a6901698b3749fe336bbd1385c1f98f2',
         contractAddress: '0x6d8eae641416B8b79e0fB3a92b17448CfFf02b11',
         chain: Tatum.Currency.MATIC,
