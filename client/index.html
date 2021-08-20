@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Tatum NFT Demo</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./img/favicon-16x16.png">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="Tatum - NFT Demo">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@tatum">
+    <meta name="twitter:title" content="Tatum - NFT Demo">
+    <meta name="twitter:description" content="Tatum - NFT Demo">
+    <meta name="twitter:creator" content="@tatum">
+    <meta name="twitter:image" content="https://i.imgur.com/L4ncsOj.png">
+    <meta property="og:title" content="Tatum - NFT Demo">
+    <meta property="og:type" content="Article">
+    <meta property="og:url" content="https://bf.tatum.io">
+    <meta property="og:image" content="https://i.imgur.com/Vb5o5mh.png">
+    <meta property="og:description" content="Tatum NFT Demo">
+    <meta property="og:site_name" content="Tatum NFT Demo">
+    <meta property="fb:admins" content="132951670226590">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link
+            href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@700&amp;family=Poppins:wght@400;500;600;700&amp;display=swap"
+            rel="stylesheet">
+    <link rel="stylesheet" media="all" href="./css/app.min.css">
+    <script>
+    var viewportmeta = document.querySelector('meta[name="viewport"]');
+    if (viewportmeta) {
+        if (screen.width < 375) {
+            var newScale = screen.width / 375;
+            viewportmeta.content = 'width=375, minimum-scale=' + newScale +
+                ', maximum-scale=1.0, user-scalable=no, initial-scale=' + newScale + '';
+        } else {
+            viewportmeta.content = 'width=device-width, maximum-scale=1.0, initial-scale=1.0';
+        }
+    }
+
+    var submitted = async function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const response = await fetch('/mint', {
+            method: 'POST',
+            body: new FormData(document.getElementsByTagName('form')[0])
+        });
+
+        var result = await response.json();
+        console.log(result)
+        let element = document.getElementById('result');
+        element.style.display = 'block'
+        document.getElementById('txId').innerText = result.txId;
+        document.getElementById('txId').href = document.getElementById('chain').value === 'MATIC'
+            ? 'https://mumbai.polygonscan.com/tx/' + result.txId
+            : 'https://flow-view-source.com/testnet/tx/' + result.txId;
+        document.getElementById('metadata').innerText = result.imagePublicUrl;
+        document.getElementById('metadata').href = result.imagePublicUrl;
+        return false
+    }
+
+    var loadFile = function (event) {
+        var output = document.getElementById('preview-img');
+        output.src = URL.createObjectURL(event.target.files[0]);
+        output.onload = function () {
+            URL.revokeObjectURL(output.src)
+        }
+    };
+
+    var changeName = function (event) {
+        document.getElementById('preview-name').innerText = event.target.value;
+    };
+
+    var changeDescription = function (event) {
+        document.getElementById('preview-description').innerText = event.target.value;
+    };
+
+    </script>
+</head>
+
+<body>
+<!-- outer-->
+<div class="outer">
+    <!-- header-->
+    <header class="header js-header" data-id="#header">
+        <div class="header__center center"><a class="header__logo" href="index.html"><img class="some-icon"
+                                                                                          src="img/tatum-logo.svg"
+                                                                                          alt="Tatum Logo"><img
+                class="some-icon-dark" src="img/logo-light.png"
+                alt="Tatum Logo"></a>
+        </div>
+    </header>
+    <div class="outer__inner">
+        <div class="section upload">
+            <div class="upload__center center">
+                <div class="upload__wrapper">
+                    <div class="upload__head">
+                        <h2 class="upload__title h2">Create your NFT</h2>
+                    </div>
+                    <form action="/mint" method="post" enctype="multipart/form-data">
+                        <div class="upload__form">
+                            <div class="upload__list">
+                                <div class="upload__item">
+                                    <div class="upload__category">Upload file</div>
+                                    <div class="upload__note">Drag or choose your file to upload</div>
+                                    <div class="upload__file">
+                                        <input class="upload__input" type="file" name="file" onchange="loadFile(event)">
+                                        <div class="upload__icon">
+                                            <svg class="icon icon-upload-file">
+                                                <use xlink:href="#icon-upload-file"></use>
+                                            </svg>
+                                        </div>
+                                        <div class="upload__format">PNG, GIF, WEBP, MP4 or MP3. Max 1Gb.</div>
+                                    </div>
+                                </div>
+                                <div class="upload__item">
+                                    <div class="upload__category">Item Details</div>
+                                    <div class="upload__fieldset">
+                                        <div class="field">
+                                            <div class="field__label">Item name</div>
+                                            <div class="field__wrap">
+                                                <input class="field__input" type="text" name="name"
+                                                       value="Tatum Magic NFT"
+                                                       onchange="changeName(event)"
+                                                       onkeyup="changeName(event)"
+                                                       placeholder="Name of your NFT asset"
+                                                       required>
+                                            </div>
+                                        </div>
+                                        <div class="field">
+                                            <div class="field__label">Description</div>
+                                            <div class="field__wrap">
+                                                <input class="field__input" type="text" name="description"
+                                                       onchange="changeDescription(event)"
+                                                       onkeyup="changeDescription(event)"
+                                                       value="Tatum logo forever."
+                                                       placeholder="Description of your NFT asset"
+                                                       required>
+                                            </div>
+                                        </div>
+                                        <div class="field">
+                                            <div class="field__label">Blockchain to mint NFT on</div>
+                                            <div class="field__wrap">
+                                                <input class="field__input" type="text" name="chain" value="MATIC"
+                                                       placeholder="Polygon"
+                                                       required>
+                                            </div>
+                                        </div>
+                                        <p id="result" style="display: none">
+                                            <a id="txId" target="_blank"></a>
+                                            <a id="metadata" target="_blank"></a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="upload__foot">
+                                <button class="button-stroke tablet-show upload__button js-preview-open">Preview
+                                </button>
+                                <button type="submit" onclick="submitted(event)"
+                                        class="button upload__button" data-effect="mfp-zoom-in"><span>Mint NFT</span>
+                                    <svg class="icon icon-arrow-next">
+                                        <use xlink:href="#icon-arrow-next"></use>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="preview js-preview">
+                    <div class="preview__inner">
+                        <button class="preview__close js-preview-close">
+                            <svg class="icon icon-close">
+                                <use xlink:href="#icon-close"></use>
+                            </svg>
+                        </button>
+                        <div class="preview__info">Preview</div>
+                        <div class="card">
+                            <div class="card__preview"><img id="preview-img"
+                                                            src="img/tatum-logo.svg" alt="Card preview"/>
+                            </div>
+                            <a class="card__link" href="item.html">
+                                <div class="card__body">
+                                    <div class="card__line">
+                                        <div class="card__title" id="preview-name">Tatum Magic NFT</div>
+                                    </div>
+                                </div>
+                                <div class="card__foot">
+                                    <div class="card__status" id="preview-description">
+                                        Tatum logo forever.
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- footer-->
+    <footer class="footer">
+        <div class="footer__center center">
+            <div class="footer__foot">
+                <div class="footer__copyright">This web-application is solely intended for Demo purposes at TechCrunch
+                    Disrupt
+                    2021.
+                </div>
+                <div class="footer__note">Contribute on <a href="https://github.com">Github</a></div>
+            </div>
+        </div>
+    </footer>
+</div>
+<div style="display: none">
+    <svg width="0" height="0">
+        <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" id="icon-upload-file">
+            <path
+                    d="M10.229.667c.707 0 1.386.281 1.886.781l1.105 1.105c.5.5.781 1.178.781 1.886v8.229c0 1.473-1.194 2.667-2.667 2.667H4.667C3.194 15.334 2 14.14 2 12.667V3.334C2 1.861 3.194.667 4.667.667h5.562zM9.333 2H4.667c-.693 0-1.263.529-1.327 1.205l-.006.128v9.333c0 .693.529 1.263 1.205 1.327l.128.006h6.667c.693 0 1.263-.529 1.327-1.205l.006-.128V5.334h-1.333a2 2 0 0 1-1.995-1.851l-.005-.149V2zM7.745 6.051c.242-.1.53-.052.727.145h0l2 2c.26.26.26.682 0 .943s-.682.26-.943 0h0l-.862-.862v3.057c0 .368-.298.667-.667.667s-.667-.298-.667-.667h0V8.276l-.862.862c-.26.26-.682.26-.943 0s-.26-.682 0-.943h0l2-2c.064-.064.138-.112.216-.145zm2.922-3.977v1.259c0 .368.298.667.667.667h1.259c-.065-.188-.173-.361-.317-.505l-1.105-1.105c-.144-.144-.317-.251-.505-.317z">
+            </path>
+        </symbol>
+        <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" id="icon-arrow-next">
+            <path
+                    d="M10.39 3.765c.464-.375 1.187-.349 1.615.057l3.692 3.5a.91.91 0 0 1 0 1.357l-3.692 3.5c-.428.406-1.151.431-1.615.057s-.493-1.007-.065-1.413L12.247 9H1.143C.512 9 0 8.552 0 8s.512-1 1.143-1h11.104l-1.922-1.822c-.428-.406-.399-1.038.065-1.413z">
+            </path>
+        </symbol>
+    </svg>
+</div>
+</body>
+
+</html>
