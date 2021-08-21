@@ -6,7 +6,7 @@ This is a simple application made for the TestCrunch Disrupt Battlefield 2021 as
 It's possible to mint an NFT token to 3 different testnet blockchains - Polygon, Flow and Binance Smart Chain.
 
 App consists of two parts - [index.html](./client/index.html), which communicates with REST API on the backend.
-In the backend, there is only [1 REST API service](./src/app.service.ts), which is responsible for minting the NFT.
+In the backend, there is only [1 REST API service](./src/app.service.ts#L41), which is responsible for minting the NFT.
 
 App must be connected to the Tatum API with valid API Key, which can be for free obtained at [https://dashboard.tatum.io](https://dashboard.tatum.io).
 For now, there is publicly available FREE testnet API Key provided in the app itself.
