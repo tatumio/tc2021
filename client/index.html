@@ -42,23 +42,39 @@
         }
     }
 
-    var submitted = async function (event) {
+    var submitted = async function (event, chain) {
         event.preventDefault();
         event.stopPropagation();
+        if(document.getElementsByName('file')[0].files[0].size > 1048576){
+            alert("File is too big!");
+            return;
+        }
 
+        document.getElementById('chain').value = chain;
         const response = await fetch('/mint', {
             method: 'POST',
             body: new FormData(document.getElementsByTagName('form')[0])
         });
 
         var result = await response.json();
-        console.log(result)
+        if (result.statusCode) {
+            alert(result.message);
+            return false;
+        }
         let element = document.getElementById('result');
         element.style.display = 'block'
-        document.getElementById('txId').innerText = result.txId;
-        document.getElementById('txId').href = document.getElementById('chain').value === 'MATIC'
-            ? 'https://mumbai.polygonscan.com/tx/' + result.txId
-            : 'https://flow-view-source.com/testnet/tx/' + result.txId;
+        switch (chain) {
+            case 'MATIC':
+                document.getElementById('txId').href = 'https://mumbai.polygonscan.com/tx/' + result.txId
+                break;
+            case 'FLOW':
+                document.getElementById('txId').href = 'https://flow-view-source.com/testnet/tx/' + result.txId
+                break;
+            case 'BSC':
+                document.getElementById('txId').href = 'https://testnet.bscscan.com/tx/' + result.txId
+                break;
+        }
+        document.getElementById('txId').innerText = document.getElementById('txId').href;
         document.getElementById('metadata').innerText = result.imagePublicUrl;
         document.getElementById('metadata').href = result.imagePublicUrl;
         return false
@@ -109,13 +125,14 @@
                                     <div class="upload__category">Upload file</div>
                                     <div class="upload__note">Drag or choose your file to upload</div>
                                     <div class="upload__file">
-                                        <input class="upload__input" type="file" name="file" onchange="loadFile(event)">
+                                        <input class="upload__input" type="file" accept="image/*"
+                                               name="file" onchange="loadFile(event)">
                                         <div class="upload__icon">
                                             <svg class="icon icon-upload-file">
                                                 <use xlink:href="#icon-upload-file"></use>
                                             </svg>
                                         </div>
-                                        <div class="upload__format">PNG, GIF, WEBP, MP4 or MP3. Max 1Gb.</div>
+                                        <div class="upload__format">PNG, GIF, JPG. Max 1MB.</div>
                                     </div>
                                 </div>
                                 <div class="upload__item">
@@ -143,14 +160,6 @@
                                                        required>
                                             </div>
                                         </div>
-                                        <div class="field">
-                                            <div class="field__label">Blockchain to mint NFT on</div>
-                                            <div class="field__wrap">
-                                                <input class="field__input" type="text" name="chain" value="MATIC"
-                                                       placeholder="Polygon"
-                                                       required>
-                                            </div>
-                                        </div>
                                         <p id="result" style="display: none">
                                             <a id="txId" target="_blank"></a>
                                             <a id="metadata" target="_blank"></a>
@@ -159,10 +168,21 @@
                                 </div>
                             </div>
                             <div class="upload__foot">
-                                <button class="button-stroke tablet-show upload__button js-preview-open">Preview
+                                <input type="hidden" name="chain" id="chain" value="MATIC"/>
+                                <button type="submit" onclick="submitted(event, 'MATIC')"
+                                        class="button upload__button" data-effect="mfp-zoom-in"><span>Mint on MATIC</span>
+                                    <svg class="icon icon-arrow-next">
+                                        <use xlink:href="#icon-arrow-next"></use>
+                                    </svg>
                                 </button>
-                                <button type="submit" onclick="submitted(event)"
-                                        class="button upload__button" data-effect="mfp-zoom-in"><span>Mint NFT</span>
+                                <button type="submit" onclick="submitted(event, 'FLOW')"
+                                        class="button upload__button" data-effect="mfp-zoom-in"><span>Mint on FLOW</span>
+                                    <svg class="icon icon-arrow-next">
+                                        <use xlink:href="#icon-arrow-next"></use>
+                                    </svg>
+                                </button>
+                                <button type="submit" onclick="submitted(event, 'BSC')"
+                                        class="button upload__button" data-effect="mfp-zoom-in"><span>Mint on BSC</span>
                                     <svg class="icon icon-arrow-next">
                                         <use xlink:href="#icon-arrow-next"></use>
                                     </svg>
@@ -183,7 +203,7 @@
                             <div class="card__preview"><img id="preview-img"
                                                             src="img/tatum-logo.svg" alt="Card preview"/>
                             </div>
-                            <a class="card__link" href="item.html">
+                            <a class="card__link">
                                 <div class="card__body">
                                     <div class="card__line">
                                         <div class="card__title" id="preview-name">Tatum Magic NFT</div>
