@@ -20,7 +20,7 @@ $ yarn
 ## Running the app
 
 ```bash
-$ yarn run start:dev
+$ npm run start:dev
 ```
 
 Once started, it's possible to open the link in the browser [http://127.0.0.1:3000](http://127.0.0.1:3000) and mint your own NFT.

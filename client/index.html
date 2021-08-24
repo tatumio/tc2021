@@ -24,12 +24,14 @@
     <meta property="og:image" content="https://i.imgur.com/Vb5o5mh.png">
     <meta property="og:description" content="Tatum NFT Demo">
     <meta property="og:site_name" content="Tatum NFT Demo">
-    <meta property="fb:admins" content="132951670226590">
+    <meta property="fb:admins" content="132951670226590">    
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link
             href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@700&amp;family=Poppins:wght@400;500;600;700&amp;display=swap"
             rel="stylesheet">
     <link rel="stylesheet" media="all" href="./css/app.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autolinker/prism-autolinker.min.css" integrity="sha512-4ZmAB2UXPu3Rgy5ZClpqnJ/zXXZBdulFXY1eWMLgIjp2HWgkHGIpr1b7kmCK+rdD5NYfivTp47UR+bQ4oTBllQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js" integrity="sha512-3oavHcAYV/4pmn+iDuax6ru7dpjKnd+21+SzCQrYdTiYDncloL7QJ3qYvsA9JU0p7ZQjB+DizGeWMm2sUrCzSQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
     var viewportmeta = document.querySelector('meta[name="viewport"]');
     if (viewportmeta) {
@@ -66,24 +68,30 @@
             return false;
         }
         let element = document.getElementById('result');
-        element.style.display = 'block'
+        element.style.display = 'none'
+        let successpopup = document.getElementById('popup-success-show');
+        successpopup.style.display = 'block'
         document.getElementsByTagName('pre')[0].style.display = 'block'
         switch (chain) {
             case 'MATIC':
-                document.getElementById('txId').href = 'https://mumbai.polygonscan.com/tx/' + result.txId
+                document.getElementById('successTxId').href = 'https://mumbai.polygonscan.com/tx/' + result.txId
                 break;
             case 'FLOW':
-                document.getElementById('txId').href = 'https://flow-view-source.com/testnet/tx/' + result.txId
+                document.getElementById('successTxId').href = 'https://flow-view-source.com/testnet/tx/' + result.txId
                 break;
             case 'BSC':
-                document.getElementById('txId').href = 'https://testnet.bscscan.com/tx/' + result.txId
+                document.getElementById('successTxId').href = 'https://testnet.bscscan.com/tx/' + result.txId
                 break;
         }
-        document.getElementById('txId').innerText = document.getElementById('txId').href;
-        document.getElementById('metadata').innerText = result.imagePublicUrl;
-        document.getElementById('metadata').href = result.imagePublicUrl;
+        document.getElementById('successTxId').innerText = result.txId;
+        document.getElementById('successImg').src = result.imagePublicUrl;
+        document.getElementById('successImgUrl').href = result.imagePublicUrl;
         return false
     }
+
+    document.getElementsByClassName("modal-close").onclick = function() {
+        document.getElementById('popup-success-show').style.display = 'none'
+}
 
     var loadFile = function (event) {
         var output = document.getElementById('preview-img');
@@ -235,20 +243,66 @@
                 </div>
             </div>
         </div>
+        <div class="modal popup popup_purchase" id="popup-success-show" style="display: none;">
+        <div class="modal-content popup__item" id="popup-success">
+            <div class="success">
+              <span class="modal-close">&times;</span>
+              <div class="success__title h2">Yay! <span role="img" aria-label="firework">🎉</span></div>
+              <div class="success__info">You successfully minted your NFT</div>
+              <div class="success__table">
+                <div class="success__row">
+                  <div>
+                    <a href="" id="successImgUrl"><img id="successImg" src="" alt="NFT Preview"></a>
+                  </div>
+                </div>
+                </div>
+              <div class="success__table">
+                <div class="success__row">
+                  <div class="success__col">Status</div>
+                  <div class="success__col">Transaction ID</div>
+                </div>
+                <div class="success__row">
+                  <div class="success__col">Success</div>
+                  <a class="success__col" id="successTxId"></a>
+                </div>
+              </div>
+              <div class="success__table">
+                <div class="success__row">
+                  <div>
+                        <pre><code class="language-javascript">Tatum.createNFT(true, {
+                        to: RECIPIENT[chain],
+                        contractAddress: NFT_ADDRESS[chain],
+                        account: SENDER_ADDRESS[chain],
+                        chain,
+                        tokenId: `${Date.now()}`,
+                        fromPrivateKey: PRIVATE_KEYS[chain],
+                        }, file, name, description);</code></pre>
+                  </div>
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> 
     </div>
     <!-- footer-->
     <footer class="footer">
         <div class="footer__center center">
             <div class="footer__foot">
-                <div class="footer__copyright">This web-application is solely intended for Demo purposes at TechCrunch
-                    Disrupt
-                    2021.
+                <div class="footer__copyright">This web-application is solely intended for demo purposes at TechCrunch Disrupt 2021.
                 </div>
                 <div class="footer__note">Contribute on <a href="https://github.com">Github</a></div>
             </div>
         </div>
     </footer>
 </div>
+<!-- scripts-->
+<script src="js/app.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.magnific-popup.min.js"></script>
+
+
+
 <div style="display: none">
     <svg width="0" height="0">
         <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" id="icon-upload-file">
