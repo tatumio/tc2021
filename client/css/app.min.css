@@ -1331,7 +1331,7 @@ body.dark .status-stroke-black {
 
 .header {
     position: relative;
-    z-index: 20;
+    z-index: 1;
     padding: 20px 0;
     border-bottom: 1px solid #E6E8EC; }
 @media only screen and (max-width: 767px) {
@@ -3121,7 +3121,7 @@ body.dark .steps__icon .loader-circle {
 .success {
   padding-top: 40px; }
   .success__title {
-    margin-bottom: 32px;
+    margin-bottom: 8px;
     text-align: center; }
   .success__info {
     max-width: 240px;
@@ -3133,7 +3133,7 @@ body.dark .steps__icon .loader-circle {
     .success__info span {
       text-decoration: underline; }
   .success__table {
-    margin-bottom: 32px;
+    margin-bottom: 20px;
     padding: 24px;
     border-radius: 12px;
     border: 1px solid #E6E8EC; }
@@ -3146,7 +3146,7 @@ body.dark .steps__icon .loader-circle {
     .success__row:nth-child(2) {
       font-weight: 500; }
       .success__row:nth-child(2) .success__col:first-child {
-        color: #9757D7; }
+        color: #2CCD9A; }
     .success__row:not(:last-child) {
       margin-bottom: 10px; }
   .success__col:first-child {
@@ -3177,10 +3177,18 @@ body.dark .steps__icon .loader-circle {
 
       .modal-content {
         background-color: #fefefe;
-        margin: 15% auto; /* 15% from the top and centered */
+        margin: 2% auto; /* 15% from the top and centered */
         padding: 20px;
         border-radius: 16px;
-        width: 80%; /* Could be more or less, depending on screen size */
+        width: 60%; /* Could be more or less, depending on screen size */
+      }
+      #successImg {
+        height: 150px;
+        border-radius: 8px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: auto;
       }
 
       .modal-close {
@@ -3195,4 +3203,54 @@ body.dark .steps__icon .loader-circle {
         color: black;
         text-decoration: none;
         cursor: pointer;
+      }
+
+
+      .container {
+        position: relative;
+      }
+      
+      .container {
+        position: relative;
+      }
+      
+      .image {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      
+      .overlay {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        width: 100%;
+        opacity: 0;
+        transition: .5s ease;
+        background-color: rgba(0, 0, 0, 0.4);
+        border-radius: 12px;
+      }
+      .overlay .icon {
+        width: 24px;
+        height: 24px;
+        fill: #fff; }
+
+      .container:hover .overlay {
+        opacity: 1;
+      }
+      
+      .overlay-text {
+        color: #fff;
+        font-size: 16px;
+        font-weight: 600;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        text-align: center;
       }
