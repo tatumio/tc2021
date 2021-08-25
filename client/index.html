@@ -26,10 +26,15 @@
     <meta property="og:site_name" content="Tatum NFT Demo">
     <meta property="fb:admins" content="132951670226590">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@700&amp;family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@700&amp;family=Poppins:wght@400;500;600;700&amp;display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" media="all" href="./css/app.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/base16/google-light.min.css" integrity="sha512-u/yq0I36izVImG/Nkz5Lu/JnuI+HlC6fbGyxaWYHk/pechSuMuslu964MdTSkcoppvdUJYlGyTXfQmpI9R+oEw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LeuI-UUAAAAABfElcMN-Sv4LZm4_0iZ-OcJ-0n-" async defer></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/base16/google-light.min.css"
+          integrity="sha512-u/yq0I36izVImG/Nkz5Lu/JnuI+HlC6fbGyxaWYHk/pechSuMuslu964MdTSkcoppvdUJYlGyTXfQmpI9R+oEw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
     <script>
     var viewportmeta = document.querySelector('meta[name="viewport"]');
@@ -46,53 +51,58 @@
     var submitted = async function (event, chain) {
         event.preventDefault();
         event.stopPropagation();
-        if (!document.getElementsByName('file')[0].files[0]) {
-            alert("No file chosen!");
-            return;
-        }
-        if(document.getElementsByName('file')[0].files[0].size > 1048576){
-            alert("File is too big!");
-            return;
-        }
+        grecaptcha.ready(async function () {
+            const token = await grecaptcha.execute('6LeuI-UUAAAAABfElcMN-Sv4LZm4_0iZ-OcJ-0n-', {action: 'submit'});
+            if (!document.getElementsByName('file')[0].files[0]) {
+                alert("No file chosen!");
+                return;
+            }
+            if (document.getElementsByName('file')[0].files[0].size > 1048576) {
+                alert("File is too big!");
+                return;
+            }
 
-        document.getElementById('chain').value = chain;
-        const response = await fetch('/mint', {
-            method: 'POST',
-            body: new FormData(document.getElementsByTagName('form')[0])
+            document.getElementById('chain').value = chain;
+            document.getElementById('token').value = token;
+            const response = await fetch('/mint', {
+                method: 'POST',
+                body: new FormData(document.getElementsByTagName('form')[0])
+            });
+
+            var result = await response.json();
+            if (result.statusCode) {
+                alert(result.message);
+                return false;
+            }
+            let element = document.getElementById('result');
+            element.style.display = 'none'
+            let successpopup = document.getElementById('popup-success-show');
+            successpopup.style.display = 'block'
+            document.getElementsByTagName('pre')[0].style.display = 'block'
+            switch (chain) {
+                case 'MATIC':
+                    document.getElementById('successTxId').href = 'https://mumbai.polygonscan.com/tx/' + result.txId
+                    break;
+                case 'FLOW':
+                    document.getElementById('successTxId').href = 'https://flow-view-source.com/testnet/tx/' + result.txId
+                    break;
+                case 'BSC':
+                    document.getElementById('successTxId').href = 'https://testnet.bscscan.com/tx/' + result.txId
+                    break;
+            }
+            document.getElementById('successTxId').innerText = result.txId;
+            document.getElementById('successImg').src = result.imagePublicUrl;
+            document.getElementById('successImgUrl').href = result.imagePublicUrl;
         });
-
-        var result = await response.json();
-        if (result.statusCode) {
-            alert(result.message);
-            return false;
-        }
-        let element = document.getElementById('result');
-        element.style.display = 'none'
-        let successpopup = document.getElementById('popup-success-show');
-        successpopup.style.display = 'block'
-        document.getElementsByTagName('pre')[0].style.display = 'block'
-        switch (chain) {
-            case 'MATIC':
-                document.getElementById('successTxId').href = 'https://mumbai.polygonscan.com/tx/' + result.txId
-                break;
-            case 'FLOW':
-                document.getElementById('successTxId').href = 'https://flow-view-source.com/testnet/tx/' + result.txId
-                break;
-            case 'BSC':
-                document.getElementById('successTxId').href = 'https://testnet.bscscan.com/tx/' + result.txId
-                break;
-        }
-        document.getElementById('successTxId').innerText = result.txId;
-        document.getElementById('successImg').src = result.imagePublicUrl;
-        document.getElementById('successImgUrl').href = result.imagePublicUrl;
         return false
     };
 
     window.onload = registerModalClickListener;
-    function registerModalClickListener(){
-    document.getElementById("modal-close").onclick = function() {
-        document.getElementById('popup-success-show').style.display = 'none';
-    };
+
+    function registerModalClickListener() {
+        document.getElementById("modal-close").onclick = function () {
+            document.getElementById('popup-success-show').style.display = 'none';
+        };
     }
 
     var loadFile = function (event) {
@@ -184,14 +194,17 @@
                             </div>
                             <div class="upload__foot">
                                 <input type="hidden" name="chain" id="chain" value="MATIC"/>
+                                <input type="hidden" name="token" id="token"/>
                                 <button type="submit" onclick="submitted(event, 'MATIC')"
-                                        class="button upload__button" data-effect="mfp-zoom-in"><span>Mint on MATIC</span>
+                                        class="button upload__button" data-effect="mfp-zoom-in">
+                                    <span>Mint on MATIC</span>
                                     <svg class="icon icon-arrow-next">
                                         <use xlink:href="#icon-arrow-next"></use>
                                     </svg>
                                 </button>
                                 <button type="submit" onclick="submitted(event, 'FLOW')"
-                                        class="button upload__button" data-effect="mfp-zoom-in"><span>Mint on FLOW</span>
+                                        class="button upload__button" data-effect="mfp-zoom-in">
+                                    <span>Mint on FLOW</span>
                                     <svg class="icon icon-arrow-next">
                                         <use xlink:href="#icon-arrow-next"></use>
                                     </svg>
@@ -236,33 +249,37 @@
             </div>
         </div>
         <div class="modal popup popup_purchase" id="popup-success-show" style="display: none;">
-        <div class="modal-content popup__item" id="popup-success">
-            <div class="success">
-              <div class="modal-close" id="modal-close">&times;</div>
-              <div class="success__title h3">Yay! <span role="img" aria-label="firework">🎉</span></div>
-              <div class="success__info">Your NFT was minted</div>
-              <div class="success__table container">
-                  <div>
-                    <a target="_blank" href="" id="successImgUrl"><img class="image" id="successImg" src="" alt="NFT Preview">
-                    <div class="overlay">
-                        <div class="overlay-text"><svg class="icon icon-globe">
-                            <use xlink:href="#icon-globe"></use>
-                        </svg><br>View Metadata</div>
+            <div class="modal-content popup__item" id="popup-success">
+                <div class="success">
+                    <div class="modal-close" id="modal-close">&times;</div>
+                    <div class="success__title h3">Yay! <span role="img" aria-label="firework">🎉</span></div>
+                    <div class="success__info">Your NFT was minted</div>
+                    <div class="success__table container">
+                        <div>
+                            <a target="_blank" href="" id="successImgUrl"><img class="image" id="successImg" src=""
+                                                                               alt="NFT Preview">
+                                <div class="overlay">
+                                    <div class="overlay-text">
+                                        <svg class="icon icon-globe">
+                                            <use xlink:href="#icon-globe"></use>
+                                        </svg>
+                                        <br>View Metadata
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
                     </div>
-                    </a>
-                  </div>
-                </div>
-              <div class="success__table">
-                <div class="success__row">
-                  <div class="success__col">Status</div>
-                  <div class="success__col">Transaction ID</div>
-                </div>
-                <div class="success__row">
-                  <div class="success__col">Success</div>
-                  <a class="success__col" id="successTxId" target="_blank"></a>
-                </div>
-              </div>
-              <div class="success__table snippet">
+                    <div class="success__table">
+                        <div class="success__row">
+                            <div class="success__col">Status</div>
+                            <div class="success__col">Transaction ID</div>
+                        </div>
+                        <div class="success__row">
+                            <div class="success__col">Success</div>
+                            <a class="success__col" id="successTxId" target="_blank"></a>
+                        </div>
+                    </div>
+                    <div class="success__table snippet">
                         <pre><code class="language-js">
 Tatum.createNFT(true, {
     to: RECIPIENT[chain],
@@ -272,22 +289,23 @@ Tatum.createNFT(true, {
     tokenId: `${Date.now()}`,
     fromPrivateKey: PRIVATE_KEYS[chain],
 }, file, name, description);</code></pre>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
     </div>
-    <!-- footer-->
-    <footer class="footer">
-        <div class="footer__center center">
-            <div class="footer__foot">
-                <div class="footer__copyright">This web-application is solely intended for demo purposes at TechCrunch Disrupt 2021.
-                </div>
-                <div class="footer__note">Contribute on <a href="https://github.com">Github</a></div>
+</div>
+<!-- footer-->
+<footer class="footer">
+    <div class="footer__center center">
+        <div class="footer__foot">
+            <div class="footer__copyright">This web-application is solely intended for demo purposes at TechCrunch
+                Disrupt 2021.
             </div>
+            <div class="footer__note">Contribute on <a href="https://github.com">Github</a></div>
         </div>
-    </footer>
+    </div>
+</footer>
 </div>
 <!-- scripts -->
 <div style="display: none">
