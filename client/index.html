@@ -24,7 +24,7 @@
     <meta property="og:image" content="https://i.imgur.com/Vb5o5mh.png">
     <meta property="og:description" content="Tatum NFT Demo">
     <meta property="og:site_name" content="Tatum NFT Demo">
-    <meta property="fb:admins" content="132951670226590">    
+    <meta property="fb:admins" content="132951670226590">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@700&amp;family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" media="all" href="./css/app.min.css">
@@ -179,16 +179,6 @@
                                             <a id="txId" target="_blank"></a>
                                             <a id="metadata" target="_blank"></a>
                                         </p>
-                                        <pre style="display: none">
-                                            Tatum.createNFT(true, {
-                                                to: RECIPIENT[chain],
-                                                contractAddress: NFT_ADDRESS[chain],
-                                                account: SENDER_ADDRESS[chain],
-                                                chain,
-                                                tokenId: `${Date.now()}`,
-                                                fromPrivateKey: PRIVATE_KEYS[chain],
-                                              }, file, name, description);
-                                        </pre>
                                     </div>
                                 </div>
                             </div>
@@ -269,23 +259,24 @@
                 </div>
                 <div class="success__row">
                   <div class="success__col">Success</div>
-                  <a class="success__col" id="successTxId"></a>
+                  <a class="success__col" id="successTxId" target="_blank"></a>
                 </div>
               </div>
               <div class="success__table snippet">
-                        <pre><code class="language-js">Tatum.createNFT(true, {
-                        to: RECIPIENT[chain],
-                        contractAddress: NFT_ADDRESS[chain],
-                        account: SENDER_ADDRESS[chain],
-                        chain,
-                        tokenId: `${Date.now()}`,
-                        fromPrivateKey: PRIVATE_KEYS[chain],
-                        }, file, name, description);</code></pre>
+                        <pre><code class="language-js">
+Tatum.createNFT(true, {
+    to: RECIPIENT[chain],
+    contractAddress: NFT_ADDRESS[chain],
+    account: SENDER_ADDRESS[chain],
+    chain,
+    tokenId: `${Date.now()}`,
+    fromPrivateKey: PRIVATE_KEYS[chain],
+}, file, name, description);</code></pre>
                 </div>
               </div>
             </div>
           </div>
-        </div> 
+        </div>
     </div>
     <!-- footer-->
     <footer class="footer">
