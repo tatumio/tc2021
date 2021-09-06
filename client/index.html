@@ -35,7 +35,7 @@
           integrity="sha512-u/yq0I36izVImG/Nkz5Lu/JnuI+HlC6fbGyxaWYHk/pechSuMuslu964MdTSkcoppvdUJYlGyTXfQmpI9R+oEw=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
-    <script>hljs.highlightAll();</script>
+    <script type="text/javascript"src="js/modalLoading.js"></script>
     <script>
     var viewportmeta = document.querySelector('meta[name="viewport"]');
     if (viewportmeta) {
@@ -64,35 +64,55 @@
 
             document.getElementById('chain').value = chain;
             document.getElementById('token').value = token;
-            const response = await fetch('/mint', {
-                method: 'POST',
-                body: new FormData(document.getElementsByTagName('form')[0])
-            });
+            modalLoading.init(true);
+            try {
+                const response = await fetch('/mint', {
+                    method: 'POST',
+                    body: new FormData(document.getElementsByTagName('form')[0])
+                });
 
-            var result = await response.json();
-            if (result.statusCode) {
-                alert(result.message);
-                return false;
+                var result = await response.json();
+                modalLoading.init(false);
+                if (result.statusCode) {
+                    alert(result.message);
+                    return false;
+                }
+                let element = document.getElementById('result');
+                element.style.display = 'none'
+                let successpopup = document.getElementById('popup-success-show');
+                successpopup.style.display = 'block'
+                document.getElementsByTagName('pre')[0].style.display = 'block'
+                switch (chain) {
+                    case 'MATIC':
+                        document.getElementById('successTxId').href = 'https://mumbai.polygonscan.com/tx/' + result.txId
+                        break;
+                    case 'FLOW':
+                        document.getElementById('successTxId').href = 'https://flow-view-source.com/testnet/tx/' + result.txId
+                        break;
+                    case 'BSC':
+                        document.getElementById('successTxId').href = 'https://testnet.bscscan.com/tx/' + result.txId
+                        break;
+                }
+                document.getElementsByClassName('language-js')[0].innerHTML = `Tatum.createNFT(true, {
+    to: RECIPIENT[chain],
+    contractAddress: NFT_ADDRESS[chain],
+    account: SENDER_ADDRESS[chain],
+    chain: Currency.${chain},
+    tokenId: \`${Date.now()}\`,
+    fromPrivateKey: PRIVATE_KEYS[chain],
+}, file, name, description);`
+                document.getElementById('resName').innerText = document.getElementById('name').value;
+                document.getElementById('resDescription').innerText = document.getElementById('description').value;
+                document.getElementById('successTxId').innerText = result.txId;
+                document.getElementById('successImg').src = result.imagePublicUrl;
+                document.getElementById('successImgUrl').href = result.imagePublicUrl;
+                hljs.highlightAll();
+            } catch (e) {
+                alert(e);
+                console.error(e);
+            } finally {
+                modalLoading.init(false);
             }
-            let element = document.getElementById('result');
-            element.style.display = 'none'
-            let successpopup = document.getElementById('popup-success-show');
-            successpopup.style.display = 'block'
-            document.getElementsByTagName('pre')[0].style.display = 'block'
-            switch (chain) {
-                case 'MATIC':
-                    document.getElementById('successTxId').href = 'https://mumbai.polygonscan.com/tx/' + result.txId
-                    break;
-                case 'FLOW':
-                    document.getElementById('successTxId').href = 'https://flow-view-source.com/testnet/tx/' + result.txId
-                    break;
-                case 'BSC':
-                    document.getElementById('successTxId').href = 'https://testnet.bscscan.com/tx/' + result.txId
-                    break;
-            }
-            document.getElementById('successTxId').innerText = result.txId;
-            document.getElementById('successImg').src = result.imagePublicUrl;
-            document.getElementById('successImgUrl').href = result.imagePublicUrl;
         });
         return false
     };
@@ -166,7 +186,9 @@
                                         <div class="field">
                                             <div class="field__label">Name of your NFT asset *</div>
                                             <div class="field__wrap">
-                                                <input class="field__input" type="text" name="name"
+                                                <input class="field__input" type="text"
+                                                       id="name"
+                                                       name="name"
                                                        value="Tatum Magic NFT"
                                                        onchange="changeName(event)"
                                                        onkeyup="changeName(event)"
@@ -177,7 +199,9 @@
                                         <div class="field">
                                             <div class="field__label">Description of your NFT asset *</div>
                                             <div class="field__wrap">
-                                                <input class="field__input" type="text" name="description"
+                                                <input class="field__input" type="text"
+                                                       name="description"
+                                                       id="description"
                                                        onchange="changeDescription(event)"
                                                        onkeyup="changeDescription(event)"
                                                        value="Tatum logo forever."
@@ -278,23 +302,26 @@
                             <div class="success__col">Success</div>
                             <a class="success__col" id="successTxId" target="_blank"></a>
                         </div>
+                        <div class="success__row">
+                            <div class="success__col">Name</div>
+                            <div class="success__col">Description</div>
+                        </div>
+
+                        <div class="success__row">
+                            <div class="success__col" id="resName"></div>
+                            <div class="success__col" id="resDescription">Description</div>
+                        </div>
                     </div>
                     <div class="success__table snippet">
                         <pre><code class="language-js">
-Tatum.createNFT(true, {
-    to: RECIPIENT[chain],
-    contractAddress: NFT_ADDRESS[chain],
-    account: SENDER_ADDRESS[chain],
-    chain,
-    tokenId: `${Date.now()}`,
-    fromPrivateKey: PRIVATE_KEYS[chain],
-}, file, name, description);</code></pre>
+</code></pre>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <!-- footer-->
 <footer class="footer">
     <div class="footer__center center">
