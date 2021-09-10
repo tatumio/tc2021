@@ -1,8 +1,8 @@
-# Tatum TestCrunch Disrupt Battlefield 2021
+# Tatum TestCrunch Disrupt 2021
 
 ## Description
 
-This is a simple application made for the TestCrunch Disrupt Battlefield 2021 as a demo of a Tatum Platform.
+This is a simple application made for the TestCrunch Disrupt 2021 as a demo of a Tatum Platform.
 It's possible to mint an NFT token to 3 different testnet blockchains - Polygon, Flow and Binance Smart Chain.
 
 App consists of two parts - [index.html](./client/index.html), which communicates with REST API on the backend.
