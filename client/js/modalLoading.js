@@ -32,5 +32,3 @@ var modalLoading = {
     },
 
 };
-
-modalLoading.init(true);
